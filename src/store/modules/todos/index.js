@@ -3,19 +3,22 @@ import axios from "axios";
 // import axios from 'axios'
 
 const state = {
-    todos: [{
-            id: 1,
-            name: 'Todo One'
-        },
-        {
-            id: 2,
-            name: "Todo Two"
-        }
-    ]
+    todos: [
+    ],
+    todo:{
+        id:null,
+        title:null,
+        status:false,
+        completed:false
+    }
 }
 
 const getters = {
-    getTodos: (state) => state.todos
+    getTodos: (state) => state.todos,
+    getTodoItem: (state) => {
+        console.log("gettodoitem",state.todo)    
+        return state.todo
+    }
 }
 
 const actions = {
@@ -24,6 +27,11 @@ const actions = {
     }) {
         const response = await axios.get('https://jsonplaceholder.typicode.com/todos')
         commit('setTodos', response.data);
+    },
+    async showTodo({commit},id){
+        const response = await axios.get(`https://jsonplaceholder.typicode.com/todos/${id}`)
+        console.log("onShow",response.data)
+        commit('viewTodo',response.data)
     },
     async addTodo({
         commit
@@ -50,7 +58,6 @@ const actions = {
     },
     async updateTodo({commit},todo){
         const response = await axios.put(`https://jsonplaceholder.typicode.com/todos/${todo.id}`,todo)
-        console.log(todo)
         commit('updateTodo', response.data);
     }
 }
@@ -58,6 +65,7 @@ const actions = {
 const mutations = {
     setTodos: (state, todos) => (state.todos = todos),
     newTodo: (state, todos) => state.todos.unshift(todos),
+    viewTodo: (state,todo) => (state.todo = todo),
     removeTodo:(state,id) => state.todos = state.todos.filter(todo => todo.id !== id),
     updateTodo:(state,updatedTodo) => {
         const index = state.todos.findIndex(todo => todo.id === updatedTodo.id)

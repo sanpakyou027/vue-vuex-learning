@@ -5,11 +5,18 @@
       <div 
         v-for="todo in getTodos" 
         :key="todo.id" 
-        @click="updateStatus(todo)" 
+        
         class="todo"
         v-bind:class="{'is-complete':todo.completed}">
-            {{todo.title}}
-            <i @click="deleteTodo(todo.id)" class="fas fa-trash-alt"></i>
+            <p>{{todo.title}}</p>
+            <div class="actions">
+                <button>
+                     <i @click="showTodo(todo.id)" class="fab fa-angellist"></i>
+                </button>
+                <button @click="deleteTodo(todo.id)">
+                     <i class="fas fa-trash-alt"></i>
+                </button>
+            </div>
       </div>
     </div>
   </div>
@@ -25,7 +32,7 @@ export default {
       this.fetchTodos()
   },
   methods: {
-    ...mapActions(["fetchTodos",'deleteTodo','updateTodo']),
+    ...mapActions(["fetchTodos",'deleteTodo','updateTodo','showTodo']),
     updateStatus(todo){
         // console.log(e)
         const updatedTodo = {
@@ -34,7 +41,7 @@ export default {
             completed: !todo.completed
         }
         this.updateTodo(updatedTodo)
-    }
+    },
   }
 };
 </script>
@@ -54,11 +61,15 @@ export default {
   position: relative;
   cursor: pointer;
 }
+.actions{
+    display:flex;
+    justify-content:space-between;
+}
+
 i {
-  position: absolute;
   bottom: 10px;
   right: 10px;
-  color: #fff;
+  /* color: #fff; */
   cursor: pointer;
 }
 .legend {
@@ -78,10 +89,7 @@ i {
   height: 10px;
   background: #41b883;
 }
-.is-complete {
-  background: #35495e;
-  color: #fff;
-}
+
 @media (max-width: 500px) {
   .todos {
     grid-template-columns: 1fr;
